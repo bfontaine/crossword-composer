@@ -1,10 +1,10 @@
-from algorithms.a_star import *
-from algorithms.csp import *
-from helpers.dictionary import *
-from helpers.gridbuilder import *
-from resources.samplegrids import *
-
 # building grid object, you can change to GRID_5_6 (use: words2.txt) or GRID_11_11
+from algorithms.a_star import A_Star
+from algorithms.csp import csp
+from helpers.dictionary import DictionaryCollection
+from helpers.gridbuilder import GridBuilder
+from resources.samplegrids import GRID_7_7
+
 gb = GridBuilder(GRID_7_7)
 gb.build_as_words_list()
 

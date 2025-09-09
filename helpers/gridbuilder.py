@@ -1,9 +1,8 @@
 import copy
 
-from models.direction import *
-from models.node import *
-from models.position import *
-from models.word import *
+from models.direction import Direction
+from models.position import Position
+from models.word import Word
 
 
 class GridBuilder:
@@ -12,15 +11,6 @@ class GridBuilder:
         self.h = len(array2d)
         self.w = len(array2d[0])
         self.words_list = []
-
-    def init_words(self):
-        for i, val1 in enumerate(self.grid):
-            for j, val2 in enumerate(val1):
-                if str(val2) != '0':
-                    self.grid[i][j] = 1
-        self.words_list = []
-        self.build_as_words_list()
-        self.fill_crosswords()
 
     def build_as_words_list(self):
         for i, val in enumerate(self.grid):
@@ -92,32 +82,6 @@ class GridBuilder:
                 return True
         return False
 
-    def get_full_grid(self):
-        grid = copy.deepcopy(self.grid)
-        for word in self.words_list:
-            if word.direction == Direction.Across:
-                i = word.start.i
-                k = word.start.j
-                for j in range(word.start.j, word.end.j + 1):
-                    if len(word.value) != 0:
-                        grid[i][j] = word.value[j - k]
-                    else:
-                        grid[i][j] = '1'
-            else:
-                j = word.start.j
-                k = word.start.i
-                for i in range(word.start.i, word.end.i + 1):
-                    if len(word.value) != 0:
-                        grid[i][j] = word.value[i - k]
-                    else:
-                        grid[i][j] = '1'
-        return grid
-
-    def fill_with_random_words(self, collection):
-        for word in self.words_list:
-            list = collection.get_dic_length_wordslist(word.length)
-            word.set_value(list[0])
-
     def print_grid(self, grid):
         grid_letters = [" "]
         for i, row in enumerate(grid):
@@ -128,19 +92,6 @@ class GridBuilder:
         result = " ".join(grid_letters)
         print(result[1:])
         print("--------------")
-
-    def print_crosswords(self):
-        for word in self.words_list:
-            for a, cross in word.crossword_at_with.items():
-                if word != cross:
-                    if word.direction == Direction.Across:
-                        print("({},{})".format(word.start.i,
-                                               word.start.j) + "-Across is crossed with " + "({},{})-Down, At: ({},{})"
-                              .format(cross.start.i, cross.start.j, a.i, a.j))
-                    else:
-                        print("({},{})".format(word.start.i,
-                                               word.start.j) + "-Down is crossed with " + "({},{})-Across At: ({},{}), "
-                              .format(cross.start.i, cross.start.j, a.i, a.j))
 
     def get_full_grid_by_list_of_words(self, list):
         grid = copy.deepcopy(self.grid)
@@ -165,22 +116,3 @@ class GridBuilder:
                         grid[i][j] = '1'
 
         return grid
-
-    def get_best_start_node(self, collection):
-        min = 1000000
-        start_node = Node(self.words_list)
-        for word in start_node.words_list:
-            if collection.dic_len_count[word.length] < min:
-                min = collection.dic_len_count[word.length]
-                start_node.active_word = word
-
-        start_node.active_word.set_value(collection.get_dic_length_wordslist(start_node.active_word.length, None, 0)[0])
-        return start_node
-
-    def fill_solution(self, solution):
-        for key, value in solution.items():
-            for var in self.words_list:
-                if var.name == key:
-                    var.set_value(value)
-        # self.print_grid(self.get_full_grid_by_list_of_words(self.words_list))
-        return self.get_full_grid_by_list_of_words(self.words_list)

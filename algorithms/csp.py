@@ -1,9 +1,9 @@
 import timeit
 
-from constraint import *
+from constraint import BacktrackingSolver, Problem, AllDifferentConstraint, MinConflictsSolver
 
-from models.direction import *
-from models.position import *
+from models.direction import Direction
+from models.position import Position
 
 
 class csp:
@@ -46,22 +46,10 @@ class csp:
                     nb += 1
         print('number of constraints: ', nb)
 
-        self.print_cons()
         self.problem.addConstraint(AllDifferentConstraint())
 
     def check(self, v1, v2, index1, index2):
         return v1[index1] == v2[index2]
-
-    def print_cons(self):
-        # for c in self.problem._constraints:
-        # print(c)
-        d, c, vc = self.problem._getArgs()
-        '''
-        print(d)
-        print(c)
-
-        print(vc)
-        '''
 
     def isCrosswords(self, var1, var2):
         if var1.direction == Direction.Across:

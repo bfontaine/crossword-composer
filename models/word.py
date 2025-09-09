@@ -1,6 +1,6 @@
 import math
 
-from models.direction import *
+from models.direction import Direction
 
 
 class Word:
