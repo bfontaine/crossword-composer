@@ -1,4 +1,3 @@
-from helpers.gridbuilder import *
 class Node(object):
     def __init__(self, list):
         self.words_list = list
@@ -8,15 +7,15 @@ class Node(object):
         self.h = 0
         self.f = 0
 
-    def add_or_update_word_value(self,word_to_change, value):
+    def add_or_update_word_value(self, word_to_change, value):
         for w in self.words_list:
             if w == word_to_change:
                 print("words are equal")
                 w.set_value(value)
 
     def is_goal(self):
-        nb_conflicts,nb_empty_values  = self.get_nb_conflicts_empty_words()
-        if nb_conflicts == 0 and nb_empty_values == 0 :
+        nb_conflicts, nb_empty_values = self.get_nb_conflicts_empty_words()
+        if nb_conflicts == 0 and nb_empty_values == 0:
             return True
 
         return False
@@ -42,4 +41,3 @@ class Node(object):
 
     def __lt__(self, other):
         return self.f < other.f
-

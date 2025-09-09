@@ -1,10 +1,8 @@
-import timeit
 import copy
-import math
+import timeit
 
 from models.direction import Direction
 from models.node import Node
-from random import shuffle
 
 
 class A_Star:
@@ -31,11 +29,11 @@ class A_Star:
 
             if current.is_goal():
                 stop = timeit.default_timer()
-                print('Done! \n Time needed',stop - start )
+                print('Done! \n Time needed', stop - start)
                 timeneeded = stop - start
                 soltion_as_grid = self.gb.get_full_grid_by_list_of_words(current.words_list)
                 print('number of nodes generated: ', self.numberofpushes)
-                return timeneeded,soltion_as_grid
+                return timeneeded, soltion_as_grid
             else:
                 if self.guicontroller:
                     self.guicontroller.render_grid_in_gui(self.gb.get_full_grid_by_list_of_words(current.words_list))
@@ -67,21 +65,21 @@ class A_Star:
 
     def stack_pop(self):
         minimum_f = max(self.opened, key=self.opened.get)
-        print('size of stack f {},{}'.format(minimum_f,len(self.opened[minimum_f])))
+        print('size of stack f {},{}'.format(minimum_f, len(self.opened[minimum_f])))
         node = self.opened[minimum_f][-1]
         self.opened[minimum_f].remove(node)
         if len(self.opened[minimum_f]) == 0:
-            self.opened.pop(minimum_f,None)
+            self.opened.pop(minimum_f, None)
 
-        return node.f,node
+        return node.f, node
 
-    def is_in_stack(self,child):
+    def is_in_stack(self, child):
         if child.f in self.opened:
             if child in self.opened[child.f]:
                 return True
         return False
 
-    def update_node(self,new_node,current):
+    def update_node(self, new_node, current):
         # here i should calculate nodes best option to go with
         # for example: the node that has minimum number in dictionary
         new_node.parent = current
@@ -95,13 +93,13 @@ class A_Star:
         for at, cross in newnode.active_word.crossword_at_with.items():
             index1, index2 = newnode.active_word.get_indexes_with(at, cross)
             letter = newnode.active_word.value[index1]
-            count_in_dic = self.collection.get_count_index_char_length(index2,letter,cross.length)
+            count_in_dic = self.collection.get_count_index_char_length(index2, letter, cross.length)
             if count_in_dic == 0:
                 return 0
             nb_poss_words_at_crosses += count_in_dic
         return nb_poss_words_at_crosses
 
-    def get_children(self,current):
+    def get_children(self, current):
         nodes = []
         # here we use the dictionary to get all words that have specific length
         if self.starting_solver == StartingSolver.LeastPossibilites:
@@ -119,11 +117,11 @@ class A_Star:
                 if new_word is None:
                     return []
 
-                list_possible_new_words = self.collection.get_list_index_char_length(index,letter,new_word.length)
+                list_possible_new_words = self.collection.get_list_index_char_length(index, letter, new_word.length)
 
                 for w in list_possible_new_words:
                     if not current.contains_word(w):
-                        newnode = self.new_node_with_new_word(current,new_word,w)
+                        newnode = self.new_node_with_new_word(current, new_word, w)
                         if newnode not in self.closed:
                             nodes.append(newnode)
             elif self.process_solver == ProcessSolver.LeastPossibilitesAnotherWord:
@@ -170,10 +168,10 @@ class A_Star:
                     list_possible_new_words = []
                     index = list(intersects_letters.keys())[0]
                     letter = intersects_letters[index]
-                    intersects_letters.pop(index,None)
+                    intersects_letters.pop(index, None)
                     list_possible_new_words = self.collection.get_list_index_char_length(index, letter, new_word.length)
 
-                    for index,letter in intersects_letters.items():
+                    for index, letter in intersects_letters.items():
                         list_possible_new_words = list(filter(lambda x: x[index] == letter, list_possible_new_words))
 
                     for w in list_possible_new_words:
@@ -195,17 +193,17 @@ class A_Star:
 
         return nodes
 
-    def new_node_with_new_word(self,current, active_word, w_value):
+    def new_node_with_new_word(self, current, active_word, w_value):
         new_copy = copy.deepcopy(current)
         for w in new_copy.words_list:
-            if self.do_have_same_positions (w, active_word):
+            if self.do_have_same_positions(w, active_word):
                 w.set_value(w_value)
                 new_copy.active_word = w
 
         new_copy.f = self.get_heuristic(new_copy)
         return new_copy
 
-    def do_have_same_positions(self,w,new_word):
+    def do_have_same_positions(self, w, new_word):
         if w.start == new_word.start and w.end == new_word.end:
             return True
         return False
@@ -220,11 +218,11 @@ class A_Star:
                 if count < min:
                     min = count
                     initial_node.active_word = word
-            print("initial node active word length: {}",initial_node.active_word.length)
+            print("initial node active word length: {}", initial_node.active_word.length)
 
             possible_words = self.collection.dic_len_list[initial_node.active_word.length]
             for w in possible_words:
-                newnode = self.new_node_with_new_word(initial_node,initial_node.active_word,w)
+                newnode = self.new_node_with_new_word(initial_node, initial_node.active_word, w)
                 self.stack_push(newnode)
         elif self.starting_solver == StartingSolver.MostIntersects:
 
@@ -243,8 +241,7 @@ class A_Star:
                 newnode = self.new_node_with_new_word(initial_node, initial_node.active_word, w)
                 self.stack_push(newnode)
 
-
-    def get_new_grid_word(self,current):
+    def get_new_grid_word(self, current):
         if self.process_solver == ProcessSolver.LeastPossibilitesActiveWord:
             new_word = None
             min = 1000000
@@ -267,7 +264,8 @@ class A_Star:
                             index = at.i - k2
                             print('oldWord: ({},{}), NewWord: ({},{}), At: ({},{})'.format(current.active_word.start.i,
                                                                                            current.active_word.start.j,
-                                                                                           word.start.i, word.start.j, at.i,
+                                                                                           word.start.i, word.start.j,
+                                                                                           at.i,
                                                                                            at.j))
                         else:
                             k1 = current.active_word.start.i
@@ -304,7 +302,7 @@ class A_Star:
                 if cross.value[0] == '1' and len(cross.crossword_at_with) > max:
                     max = len(cross.crossword_at_with)
                     new_word = cross
-                    i1,i2 = current.active_word.get_indexes_with(at,cross)
+                    i1, i2 = current.active_word.get_indexes_with(at, cross)
                     letter = current.active_word.value[i1]
                     index = i2
                     print('max=', cross.length)
@@ -327,12 +325,14 @@ class StartingSolver:
     MostIntersects = 1,
     LeastPossibilites = 2
 
+
 class ProcessSolver:
-    MostIntersectsActiveWord= 1,
+    MostIntersectsActiveWord = 1,
     MostIntersectsAnotherWord = 2,
 
     LeastPossibilitesActiveWord = 3
     LeastPossibilitesAnotherWord = 4
+
 
 class AStarHeuristic:
     Basic = 1,

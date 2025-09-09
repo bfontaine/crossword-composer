@@ -1,9 +1,11 @@
-from models.position import *
-from models.word import *
+import copy
+
 from models.direction import *
 from models.node import *
+from models.position import *
+from models.word import *
 
-import copy
+
 class GridBuilder:
     def __init__(self, array2d):
         self.grid = array2d
@@ -75,13 +77,11 @@ class GridBuilder:
                 if var1 != var2:
                     if self.is_crosswords(var1, var2):
                         if var1.direction == Direction.Across:
-                            int_at = Position(var1.start.i,var2.start.j)
+                            int_at = Position(var1.start.i, var2.start.j)
                             var1.add_crossword(int_at, var2)
                         else:
-                            int_at = Position(var2.start.i,var1.start.j)
+                            int_at = Position(var2.start.i, var1.start.j)
                             var1.add_crossword(int_at, var2)
-
-
 
     def is_crosswords(self, var1, var2):
         if var1.direction == Direction.Across:
@@ -98,7 +98,7 @@ class GridBuilder:
             if word.direction == Direction.Across:
                 i = word.start.i
                 k = word.start.j
-                for j in range(word.start.j, word.end.j+1):
+                for j in range(word.start.j, word.end.j + 1):
                     if len(word.value) != 0:
                         grid[i][j] = word.value[j - k]
                     else:
@@ -106,7 +106,7 @@ class GridBuilder:
             else:
                 j = word.start.j
                 k = word.start.i
-                for i in range(word.start.i, word.end.i+1):
+                for i in range(word.start.i, word.end.i + 1):
                     if len(word.value) != 0:
                         grid[i][j] = word.value[i - k]
                     else:
@@ -131,14 +131,16 @@ class GridBuilder:
 
     def print_crosswords(self):
         for word in self.words_list:
-            for a,cross in word.crossword_at_with.items():
+            for a, cross in word.crossword_at_with.items():
                 if word != cross:
                     if word.direction == Direction.Across:
-                        print("({},{})".format(word.start.i,word.start.j) + "-Across is crossed with "+"({},{})-Down, At: ({},{})"
-                              .format(cross.start.i,cross.start.j,a.i,a.j))
+                        print("({},{})".format(word.start.i,
+                                               word.start.j) + "-Across is crossed with " + "({},{})-Down, At: ({},{})"
+                              .format(cross.start.i, cross.start.j, a.i, a.j))
                     else:
-                        print("({},{})".format(word.start.i,word.start.j) + "-Down is crossed with " + "({},{})-Across At: ({},{}), "
-                              .format(cross.start.i,cross.start.j,a.i,a.j))
+                        print("({},{})".format(word.start.i,
+                                               word.start.j) + "-Down is crossed with " + "({},{})-Across At: ({},{}), "
+                              .format(cross.start.i, cross.start.j, a.i, a.j))
 
     def get_full_grid_by_list_of_words(self, list):
         grid = copy.deepcopy(self.grid)
@@ -146,7 +148,7 @@ class GridBuilder:
             if word.direction == Direction.Across:
                 i = word.start.i
                 k = word.start.j
-                for j in range(word.start.j, word.end.j+1):
+                for j in range(word.start.j, word.end.j + 1):
                     if len(word.value) != 0:
                         if grid[i][j] == 1:
                             grid[i][j] = word.value[j - k]
@@ -155,7 +157,7 @@ class GridBuilder:
             else:
                 j = word.start.j
                 k = word.start.i
-                for i in range(word.start.i, word.end.i+1):
+                for i in range(word.start.i, word.end.i + 1):
                     if len(word.value) != 0:
                         if grid[i][j] == 1:
                             grid[i][j] = word.value[i - k]
@@ -176,11 +178,9 @@ class GridBuilder:
         return start_node
 
     def fill_solution(self, solution):
-        for key,value in solution.items():
+        for key, value in solution.items():
             for var in self.words_list:
                 if var.name == key:
                     var.set_value(value)
-        #self.print_grid(self.get_full_grid_by_list_of_words(self.words_list))
+        # self.print_grid(self.get_full_grid_by_list_of_words(self.words_list))
         return self.get_full_grid_by_list_of_words(self.words_list)
-
-
