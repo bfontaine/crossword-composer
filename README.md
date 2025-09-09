@@ -4,17 +4,12 @@ This project contains implementation of Crossword Composer problem in Python.
 For a given grid and specific dictionary which contains list of words in English, the software trys to fill all the
 white cells in the grid with letters where each columns or row are formed by a word in the dictionary.
 
-## Project Core Requirements:
-
-1. Python 64bit version because of the memory usage (with A* 3 to 4 GB needed)
-2. Python-Constraint: https://github.com/python-constraint/python-constraint
-
 ## Project Main Structure:
 
 1. algorithms folder:
     - contains two main files, a_star.py and csp.py.
     - a_star.py is the a* algorithm implementation.
-    - csp.py contains a wrapper class that use a library: python-constrait.
+    - csp.py contains a wrapper class that use a library: python-constraint.
 2. helpers:
     - dictionary: contains implementation of all helper methods and indexing needed by the algorithms
     - gridBuilder: contains methods of building grids arrays, wordslist and convertions between them.
@@ -24,9 +19,9 @@ white cells in the grid with letters where each columns or row are formed by a w
     - position: represent the x,y coordinates in the grid.
     - direction: has two values: Across/Down.
 4. resources:
-    - samplegrids: contains three main grids: GRID_11_11,GRID_7_7, GRID_5_6
     - words(2)(small).txt:  are the dictionaries.
-      and Finally one main file, main.py.
+
+and finally one main file, main.py.
 
 ## Custom A* Solvers
 
